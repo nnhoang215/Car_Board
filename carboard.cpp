@@ -51,7 +51,8 @@ void promptMenu(bool* shouldExitProgram) {
     input = Helper::readInput();
     cout << "" << endl;
 
-    if (Helper::isNumber(input)) {
+    // validate float input, instead of using numbers, use string comparison 
+    if (input == "1" || input == "2" || input == "3") {
         choice = std::stoi(input);
     } else {
         Helper::printInvalidInput();
