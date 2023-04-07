@@ -13,16 +13,16 @@
 
 enum Direction
 {
-    NORTH,
-    EAST,
+  NORTH,
+	EAST,
 	SOUTH,
 	WEST
 };
 
 enum TurnDirection
 {
-    TURN_LEFT,
-    TURN_RIGHT
+	TURN_LEFT,
+	TURN_RIGHT
 };
 
 class Position
@@ -34,6 +34,8 @@ public:
 
 	Position();
 	Position(int x, int y);
+	int getX();
+	int getY();
 };
 
 class Player
