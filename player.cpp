@@ -25,6 +25,7 @@ Player::Player()
     Position* tempPosition = new Position(-1,-1);
     this->position = *tempPosition;
     this->direction = NORTH;
+    delete tempPosition;
 }
 
 void Player::initialisePlayer(Position* position, Direction direction)
@@ -33,28 +34,59 @@ void Player::initialisePlayer(Position* position, Direction direction)
     delete &(this->position);
     this->position = *position;
     this->direction = direction;
+    this->moves = 0;
 }
 
 void Player::turnDirection(TurnDirection turnDirection)
 {
-    //TODO
+    // converts enum to int for easier operations
+    int dirNum = this->direction;
+    if (turnDirection == TURN_LEFT) {
+        dirNum-=1;
+    } 
+
+    if (turnDirection == TURN_RIGHT) {
+        dirNum+=1;
+    } 
+
+    //wrap around
+    dirNum = (dirNum == -1) ? 3 : dirNum;
+    dirNum = (dirNum == 4) ? 0 : dirNum;
+
+    //converts int to Direction Enum and update direction
+    this->direction = static_cast<Direction>(dirNum);
 }
 
 Position Player::getNextForwardPosition()
 {
-    //TODO
+    int x = this->position.getX();
+    int y = this->position.getY();
 
-    return this->position;
+    if (this->direction == NORTH) {
+        y--;
+    } else if (this->direction == EAST) {
+        x++;
+    } else if (this->direction == SOUTH) {
+        y++;
+    } else if (this->direction == WEST) {
+        x--;
+    }
+
+    Position newPosition(x,y);
+
+    return newPosition;
 }
 
 void Player::updatePosition(Position position)
 {
-    //TODO
+    // transfer of ownership 
+    // delete &(this->position);
+    this->position = position;
+    this->moves++;
 }
 
 void Player::displayDirection()
 {
-    // change this
      if (this->direction == NORTH) {
         std::cout << DIRECTION_ARROW_OUTPUT_NORTH; 
     } else if (this->direction == EAST) {

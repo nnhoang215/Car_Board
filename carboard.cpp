@@ -39,7 +39,7 @@ int main()
 }
 
 void promptMenu(bool* shouldExitProgram) {
-    int choice = 3;
+    int choice = 0;
     cout << "\n"
         << "Welcome to Car Board\n"
         << "--------------------\n"
@@ -63,6 +63,7 @@ void promptMenu(bool* shouldExitProgram) {
         showPlayInstruction();
         Board* startBoard = new Board();
         Player* currentPlayer = new Player();
+        // shows an empty board to start
         startBoard->display(currentPlayer);
 
         // determines if stage one should continue running 
@@ -70,9 +71,9 @@ void promptMenu(bool* shouldExitProgram) {
         while (!shouldExitGame) {
             showInstructionStageOne(&shouldExitGame, startBoard, currentPlayer);
         }
-        // showInstructionStageTwo();
-        // showInstructionStageThree();
+        promptMenu(shouldExitProgram);
         // delete startBoard;
+        // delete currentPlayer;
     } else if (choice == SHOW_INFO) {
         showStudentInformation("Hoang Nguyen", "s3926555", "s3926555@rmit.edu.vn");
     } else if (choice == QUIT) {
@@ -146,6 +147,7 @@ void showInstructionStageOne(bool* shouldExitGame, Board* board, Player* current
             Helper::printInvalidInput();
             showInstructionStageOne(shouldExitGame, board, currentPlayer);
         }
+        delete splitInput;
     }
 };
 
@@ -161,7 +163,7 @@ void showInstructionStageTwo(bool* shouldExitGame, Board* board, Player* current
     // check for empty string
     if (input.length() < 1) {
         Helper::printInvalidInput();
-        showInstructionStageOne(shouldExitGame, board, currentPlayer);
+        showInstructionStageTwo(shouldExitGame, board, currentPlayer);
     }
     
     std::vector<string>* splitInput = new std::vector<string>();
@@ -207,8 +209,8 @@ void showInstructionStageTwo(bool* shouldExitGame, Board* board, Player* current
         }
 
         
-        bool isPlaceable = board->placePlayer(*initPosition);
-        if (isPlaceable) {
+        bool isPlaced = board->placePlayer(*initPosition);
+        if (isPlaced) {
             currentPlayer->initialisePlayer(initPosition, direction);
             showInstructionStageThree(shouldExitGame, board, currentPlayer);
         } else {
@@ -248,22 +250,38 @@ void showInstructionStageThree(bool* shouldExitGame, Board* board, Player* curre
     // check for empty string
     if (input.length() < 1) {
         Helper::printInvalidInput();
-        showInstructionStageOne(shouldExitGame, board, currentPlayer);
+        showInstructionStageThree(shouldExitGame, board, currentPlayer);
     }
-    
-    if (input == "forward" || input == "f") {
-        cout << "go forward\n" << endl;
-        showInstructionStageThree(shouldExitGame, board, currentPlayer);
-    } else if (input == "turn_left" || input == "l") {
-        cout << "turn_left\n" << endl;
-        showInstructionStageThree(shouldExitGame, board, currentPlayer);
-    } else if (input == "turn_right" || input == "r") {
-        cout << "turn_right\n" << endl;
-        showInstructionStageThree(shouldExitGame, board, currentPlayer);
-    } else if (input == "quit") {
+    if (input == "quit") {
+        cout << "Total player moves: " << currentPlayer->moves <<  "\n" << endl;
         *shouldExitGame = true;
     } else {
-        Helper::printInvalidInput();
-        showInstructionStageThree(shouldExitGame, board, currentPlayer);
+        if (input == "forward" || input == "f") {
+            cout << "go forward\n" << endl;
+            PlayerMove playerMove = board->movePlayerForward(currentPlayer);        
+            
+            if (playerMove == PLAYER_MOVED) {
+                cout << "Player moved.\n" << endl;
+                showInstructionStageThree(shouldExitGame, board, currentPlayer);    
+            } else if (playerMove == CELL_BLOCKED){
+                cout << "Unable to move - cell is blocked\n" << endl;
+                showInstructionStageThree(shouldExitGame, board, currentPlayer);    
+            } else {
+                cout << "Unable to move - outside bounds\n" << endl;
+                showInstructionStageThree(shouldExitGame, board, currentPlayer);
+            }
+        } else if (input == "turn_left" || input == "l") {
+            currentPlayer->turnDirection(TURN_LEFT);
+            showInstructionStageThree(shouldExitGame, board, currentPlayer);
+        } else if (input == "turn_right" || input == "r") {
+            currentPlayer->turnDirection(TURN_RIGHT);
+            showInstructionStageThree(shouldExitGame, board, currentPlayer);
+        } else {
+            cout << "last case: " <<  input << endl;
+            Helper::printInvalidInput();
+            showInstructionStageThree(shouldExitGame, board, currentPlayer);
+        }
     }
+    // delete board;
+    // delete currentPlayer;
 };

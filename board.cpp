@@ -67,84 +67,90 @@ void Board::load(int boardId)
 
 bool Board::placePlayer(Position position)
 {
+    bool result = false;
+    int playerRowPosition = position.getY();
+    int playerColPosition = position.getX();
+    
     // check if the position is available
-    if ((*board)[position.getY()][position.getX()] == BLOCKED) {
-        //TODO 
-        return false;
-    } else {
-        //TODO
-        return true;
+    bool isBlocked = (*board)[position.getY()][position.getX()] == BLOCKED;
+    bool isOutBound = playerRowPosition > 9 || playerColPosition > 9; // replace with board size
+
+    if (!isBlocked && !isOutBound) {
+        (*board)[position.getY()][position.getX()] = PLAYER;
+        result = true;
     }
+
+    return result;
 }
 
 PlayerMove Board::movePlayerForward(Player* player)
 {
-    // TODO
-    return PLAYER_MOVED;
+    Position nextPosition = player->getNextForwardPosition();
+    PlayerMove playerMove = CELL_BLOCKED;
+    int nextRowPos = nextPosition.getY();
+    int nextColPos = nextPosition.getX();
+    
+    bool isOutBound = nextRowPos < 0 || nextColPos < 0 || nextRowPos > 9 || nextColPos > 9; // replace with size of board
+    if (isOutBound) {
+        playerMove = OUTSIDE_BOUNDS;
+    } else {
+        bool isBlocked = (*board)[nextRowPos][nextColPos] == BLOCKED;
+        if (isBlocked) {
+            playerMove = CELL_BLOCKED;
+        } else {
+            int playerRowPosition = (player->position).getY();
+            int playerColPosition = (player->position).getX();
+            (*board)[playerRowPosition][playerColPosition] = EMPTY;
+
+            player->updatePosition(nextPosition);
+            (*board)[nextRowPos][nextColPos] = PLAYER;
+            playerMove = PLAYER_MOVED;
+        }
+    } 
+
+    return playerMove;    
 }
 
 void Board::display(Player* player)
 {
-    const int row = 11;
-    const int col = 24;
-    *board = *(this->board);
-
-    int playerRowPosition = (player->position).getY();
-    int playerColPosition = (player->position).getX();
-
-    // check if the position is just a filler or not 
-    // if (playerRowPosition != -1 && playerColPosition != -1) {
-    //     (*board)[playerRowPosition][playerColPosition] = PLAYER;
-    // }
-
-    // if ()
-    // Direction playerPosition = player->direction;
+    // const int row = 11;
+    // const int col = 24;
     
-    // TODO: for loop this
-    char tempBoard[row][col] = {
-        "| |0|1|2|3|4|5|6|7|8|9|",
-        "|0| | | | | | | | | | |",
-        "|1| | | | | | | | | | |",
-        "|2| | | | | | | | | | |",
-        "|3| | | | | | | | | | |",
-        "|4| | | | | | | | | | |",
-        "|5| | | | | | | | | | |",
-        "|6| | | | | | | | | | |",
-        "|7| | | | | | | | | | |",
-        "|8| | | | | | | | | | |",
-        "|9| | | | | | | | | | |"
-    };
-
-
-    // add landscape
-    for(int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++)
-        {
-            int corRow = i + 1;
-            int corCol = 3 + (2 * j);
-            if ((*board)[i][j] == BLOCKED) {
-                tempBoard[corRow][corCol] = *BLOCKED_OUTPUT;
-            } else if ((*board)[i][j] == EMPTY)  {
-              // TODO
-            } 
-        }
-    }
-
-    for (int i = 0; i < row; i++) {
-        for (int j = 0; j < col; j++) {
-            int corRow = playerRowPosition + 1;
-            int corCol = 3 + (2 * playerColPosition);
-
-            if (i == corRow && j == corCol && playerRowPosition > 0 && playerColPosition > 0){
-                player->displayDirection();
-            } else {
-                std::cout << tempBoard[i][j];
+    *board = *(this->board);
+    
+    int boardWidth = 10;
+    int boardHeight = 10;
+    // this function prints the matrix 
+    for(int i = -1; i < boardHeight; i++) {
+        std::cout << LINE_OUTPUT;
+        if (i == -1) {
+            for (int j = -1; j < boardWidth; j++) {
+                if (j == -1) {
+                    std::cout << " " << LINE_OUTPUT;
+                } else {
+                    std::cout << j << LINE_OUTPUT;
+                }
+            }
+        } else {
+            for (int j = -1; j < boardWidth; j++) {
+                if (j == -1) {
+                    std::cout << i << LINE_OUTPUT;
+                } else {
+                    if ((*board)[i][j] == BLOCKED) {
+                        std::cout << BLOCKED_OUTPUT;
+                    } else if ((*board)[i][j] == PLAYER) {
+                        player->displayDirection();
+                    } else {
+                        std::cout << EMPTY_OUTPUT;
+                    }
+                    std::cout << LINE_OUTPUT;
+                }
             }
         }
-        std::cout << "" << std::endl;        
+        std::cout << "\n";
     }
 
     std::cout << "" << std::endl;        
- }
+}
 
 
