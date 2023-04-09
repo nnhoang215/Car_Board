@@ -49,7 +49,7 @@ Board::Board()
 }
 
 Board::~Board()
-{
+{   
     delete this->board;
 }
 
