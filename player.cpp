@@ -2,7 +2,8 @@
 
 Position::Position()
 {
-    //TODO
+    this->x = -1;
+    this->y = -1;
 }
 
 
@@ -22,7 +23,7 @@ int Position::getY(){
 
 Player::Player()
 {
-    Position* tempPosition = new Position(-1,-1);
+    Position* tempPosition = new Position();
     this->position = *tempPosition;
     this->direction = NORTH;
     delete tempPosition;
