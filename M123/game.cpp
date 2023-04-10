@@ -11,7 +11,7 @@ Game::Game()
 
 Game::~Game()
 {
-    delete player;
+    // delete player;
     delete board;
 }
 
@@ -74,7 +74,7 @@ bool Game::loadBoard()
         }
     }
 
-    return isSuccessful; // feel free to revise this line, depending on your implementation.
+    return isSuccessful;
 }
 
 bool Game::initializePlayer()
@@ -172,7 +172,7 @@ bool Game::initializePlayer()
         }
     }
 
-    return isSuccessful; // feel free to revise this line.
+    return isSuccessful;
 }
 
 void Game::play()

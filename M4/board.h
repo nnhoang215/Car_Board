@@ -35,12 +35,14 @@ class Board
 
 private:
     std::vector<std::vector<Cell>>* board;
+    int boardSize;
 
 public:
 
     /**
      * Initilize and destory a 10*10 board
      */
+    Board(int boardSize);
     Board();
     ~Board();
     /**
@@ -98,6 +100,13 @@ public:
 
     */
     void display(Player* player);
+
+    /*
+    * randomize the obstacles in the board
+    * takes in the probability range 0.0 -> 1.0
+    */
+   void loadRandomObstacles(double probability);
+   int getSize();
 };
 
 

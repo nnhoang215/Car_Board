@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string.h>
 #include <random>
+#include <cmath>
 
 class Helper
 {
@@ -45,5 +46,10 @@ public:
 
     static void printInvalidInput();
 
+    static bool probTrue(double p);
+
+    static bool isValidSize(std::string s);
+
+    static bool isValidProbability(std::string s);
 };
 #endif

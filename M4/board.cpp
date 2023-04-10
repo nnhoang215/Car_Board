@@ -30,22 +30,19 @@ const vector<vector<Cell>> Board::BOARD_2 =
     { EMPTY, BLOCKED, BLOCKED, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY }
 };
 
-Board::Board()
+Board::Board() {}
+
+Board::Board(int boardSize)
 {   
-    this->board = new std::vector<std::vector<Cell>>
-    {
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY }
-    };
-    // TODO
+    this->board = new std::vector<std::vector<Cell>>{};
+
+    for (int i = 0; i < boardSize; i++) {
+        (*board).push_back(std::vector<Cell>());
+        for (int j = 0; j < boardSize; j++) {
+            (*board)[i].push_back(EMPTY);
+        }
+    }
+    this->boardSize = boardSize;
 }
 
 Board::~Board()
@@ -65,6 +62,18 @@ void Board::load(int boardId)
     }
 }
 
+void Board::loadRandomObstacles(double probability) {
+    //TODO
+    std::cout << "load random obstacles with probability: " << probability << std::endl;void loadRandomObstacles(double probability);
+    for (int i = 0; i < this->boardSize; i++) {
+        for (int j = 0; j < this->boardSize; j++) {
+            if (Helper::probTrue(probability)) {
+                (*(this->board))[i][j] = BLOCKED;
+            }
+        }
+    }
+}
+
 bool Board::placePlayer(Position position)
 {
     bool result = false;
@@ -73,7 +82,7 @@ bool Board::placePlayer(Position position)
     
     // check if the position is available
     bool isBlocked = (*board)[position.getY()][position.getX()] == BLOCKED;
-    bool isOutBound = playerRowPosition > 9 || playerColPosition > 9; // replace with board size
+    bool isOutBound = playerRowPosition >= boardSize || playerColPosition >= boardSize; // replace with board size
 
     if (!isBlocked && !isOutBound) {
         (*board)[position.getY()][position.getX()] = PLAYER;
@@ -90,7 +99,7 @@ PlayerMove Board::movePlayerForward(Player* player)
     int nextRowPos = nextPosition.getY();
     int nextColPos = nextPosition.getX();
     
-    bool isOutBound = nextRowPos < 0 || nextColPos < 0 || nextRowPos > 9 || nextColPos > 9; // replace with size of board
+    bool isOutBound = nextRowPos < 0 || nextColPos < 0 || nextRowPos >= boardSize || nextColPos >= boardSize; // replace with size of board
     if (isOutBound) {
         playerMove = OUTSIDE_BOUNDS;
     } else {
@@ -113,28 +122,29 @@ PlayerMove Board::movePlayerForward(Player* player)
 
 void Board::display(Player* player)
 {
-    // const int row = 11;
-    // const int col = 24;
-    
-    *board = *(this->board);
-    
-    int boardWidth = 10;
-    int boardHeight = 10;
     // this function prints the matrix 
-    for(int i = -1; i < boardHeight; i++) {
+    for(int i = -1; i < this->boardSize; i++) {
         std::cout << LINE_OUTPUT;
         if (i == -1) {
-            for (int j = -1; j < boardWidth; j++) {
+            for (int j = -1; j < this->boardSize; j++) {
                 if (j == -1) {
                     std::cout << " " << LINE_OUTPUT;
                 } else {
-                    std::cout << j << LINE_OUTPUT;
+                    if (j > 9) {
+                        std::cout << j-10 << LINE_OUTPUT;
+                    } else {
+                        std::cout << j << LINE_OUTPUT;
+                    }
                 }
             }
         } else {
-            for (int j = -1; j < boardWidth; j++) {
+            for (int j = -1; j < this->boardSize; j++) {
                 if (j == -1) {
-                    std::cout << i << LINE_OUTPUT;
+                    if (i > 9) {
+                        std::cout << i-10 << LINE_OUTPUT;
+                    } else {
+                        std::cout << i << LINE_OUTPUT;
+                    }
                 } else {
                     if ((*board)[i][j] == BLOCKED) {
                         std::cout << BLOCKED_OUTPUT;
@@ -149,8 +159,9 @@ void Board::display(Player* player)
         }
         std::cout << "\n";
     }
-
     std::cout << "" << std::endl;        
 }
 
-
+int Board::getSize() {
+    return this->boardSize;
+}

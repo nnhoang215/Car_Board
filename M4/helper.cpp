@@ -59,3 +59,34 @@ string Helper::readInput()
 
     return input;
 }
+
+bool Helper::probTrue(double p) {
+    return rand() < p * (RAND_MAX+1.0);
+}
+
+bool Helper::isValidSize (string s) {
+    bool result = false;
+    if (isNumber(s)) {
+        int testInteger = std::stoi(s);
+        int testDouble = std::stod(s);
+
+        if (testInteger == testDouble) {
+            if (testInteger <= 20 && testInteger >= 10) {
+                result = true;
+            }
+        }
+    }
+
+    return result;
+}
+
+bool Helper::isValidProbability(std::string s) {
+    bool result = false;
+    if (isNumber(s)) {
+        int testProb = std::stod(s);
+        if (testProb >= 0 && testProb <= 1) {
+            result = true;
+        }
+    }
+    return result;
+}
