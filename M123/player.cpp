@@ -80,15 +80,13 @@ Position Player::getNextForwardPosition()
 
 void Player::updatePosition(Position position)
 {
-    // transfer of ownership 
-    // delete &(this->position);
     this->position = position;
     this->moves++;
 }
 
 void Player::displayDirection()
 {
-     if (this->direction == NORTH) {
+    if (this->direction == NORTH) {
         std::cout << DIRECTION_ARROW_OUTPUT_NORTH; 
     } else if (this->direction == EAST) {
         std::cout <<  DIRECTION_ARROW_OUTPUT_EAST;

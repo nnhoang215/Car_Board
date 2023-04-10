@@ -32,20 +32,14 @@ const vector<vector<Cell>> Board::BOARD_2 =
 
 Board::Board()
 {   
-    this->board = new std::vector<std::vector<Cell>>
-    {
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-        { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY }
-    };
-    // TODO
+    this->board = new std::vector<std::vector<Cell>>{};
+
+    for (int i = 0; i < DEFAULT_BOARD_DIMENSION; i++) {
+        (*board).push_back(std::vector<Cell>());
+        for (int j = 0; j < DEFAULT_BOARD_DIMENSION; j++) {
+            (*board)[i].push_back(EMPTY);
+        }
+    }
 }
 
 Board::~Board()
@@ -55,13 +49,10 @@ Board::~Board()
 
 void Board::load(int boardId)
 {
-    // TODO
     if (boardId == 1) {
         *(this->board) = BOARD_1;
     } else if (boardId == 2) {
         *(this->board) = BOARD_2;
-    } else {
-        std::cout << "need input validation" << std::endl;
     }
 }
 
@@ -70,11 +61,10 @@ bool Board::placePlayer(Position position)
     bool result = false;
     int playerRowPosition = position.getY();
     int playerColPosition = position.getX();
-    
-    // check if the position is available
     bool isBlocked = (*board)[position.getY()][position.getX()] == BLOCKED;
-    bool isOutBound = playerRowPosition > 9 || playerColPosition > 9; // replace with board size
+    bool isOutBound = playerRowPosition > MAX_POS || playerColPosition > MAX_POS;
 
+    // check if the position is available
     if (!isBlocked && !isOutBound) {
         (*board)[position.getY()][position.getX()] = PLAYER;
         result = true;
@@ -89,8 +79,10 @@ PlayerMove Board::movePlayerForward(Player* player)
     PlayerMove playerMove = CELL_BLOCKED;
     int nextRowPos = nextPosition.getY();
     int nextColPos = nextPosition.getX();
-    
-    bool isOutBound = nextRowPos < 0 || nextColPos < 0 || nextRowPos > 9 || nextColPos > 9; // replace with size of board
+    bool isRowOutBound = nextRowPos < MIN_POS || nextRowPos > MAX_POS; 
+    bool isColOutBound = nextColPos < MIN_POS || nextColPos > MAX_POS;
+    bool isOutBound = isRowOutBound || isColOutBound;
+
     if (isOutBound) {
         playerMove = OUTSIDE_BOUNDS;
     } else {
@@ -113,18 +105,11 @@ PlayerMove Board::movePlayerForward(Player* player)
 
 void Board::display(Player* player)
 {
-    // const int row = 11;
-    // const int col = 24;
-    
-    *board = *(this->board);
-    
-    int boardWidth = 10;
-    int boardHeight = 10;
-    // this function prints the matrix 
-    for(int i = -1; i < boardHeight; i++) {
+    int boardSize = DEFAULT_BOARD_DIMENSION;
+    for(int i = -1; i < boardSize; i++) {
         std::cout << LINE_OUTPUT;
         if (i == -1) {
-            for (int j = -1; j < boardWidth; j++) {
+            for (int j = -1; j < boardSize; j++) {
                 if (j == -1) {
                     std::cout << " " << LINE_OUTPUT;
                 } else {
@@ -132,7 +117,7 @@ void Board::display(Player* player)
                 }
             }
         } else {
-            for (int j = -1; j < boardWidth; j++) {
+            for (int j = -1; j < boardSize; j++) {
                 if (j == -1) {
                     std::cout << i << LINE_OUTPUT;
                 } else {

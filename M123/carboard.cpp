@@ -3,21 +3,12 @@
 #include "board.h"
 #include "player.h"
 
-
-using std::string;
-using std::cout;
-using std::cin;
-using std::endl;
-
-// can we use using namespace std; ? 
-
 #define PLAY 1
 #define SHOW_INFO 2
 #define QUIT 3
 
-void showStudentInformation(string name, string id, string email);
+void showStudentInformation(std::string name, std::string id, std::string email);
 inline void waitEnter();
-
 void promptMenu(bool& shouldExitProgram);
 void showPlayInstruction();
 
@@ -37,16 +28,15 @@ int main()
 
 void promptMenu(bool& shouldExitProgram) {
     int choice = 0;
-    cout << "\n"
+    std::cout << "\n"
         << "Welcome to Car Board\n"
         << "--------------------\n"
         << "1. Play game\n"
         << "2. Show student's information\n"
         << "3. Quit\n\n"
         << "Please enter your choice: ";
-    string input;
-    input = Helper::readInput();
-    cout << "" << endl;
+    std::string input = Helper::readInput();
+    std::cout << "" << std::endl;
 
     // validate float input, instead of using numbers, use string comparison 
     if (input == "1" || input == "2" || input == "3") {
@@ -69,12 +59,10 @@ void promptMenu(bool& shouldExitProgram) {
         Helper::printInvalidInput();
         shouldExitProgram = false;
     }
-    
-    
 }
 
-void showStudentInformation(string name, string id, string email){
-    cout << "-----------------------------------\n"
+void showStudentInformation(std::string name, std::string id, std::string email){
+    std::cout << "-----------------------------------\n"
         << "Name: "<< name << "\n"
         << "Student ID: " << id << "\n"
         << "Email: " << email << "\n"
@@ -82,7 +70,7 @@ void showStudentInformation(string name, string id, string email){
 }
 
 void showPlayInstruction() {
-    cout << "You can use the following commands to play the game:\n\n"
+    std::cout << "You can use the following commands to play the game:\n\n"
     << "load <g>\n"
     << "    g: the id of the game board to load\n"
     << "init <x>,<y>,<direction>\n"
@@ -92,11 +80,11 @@ void showPlayInstruction() {
     << "forward (or f)\n"
     << "turn_left (or l)\n"
     << "turn_right (or r)\n"
-    << "quit\n\n" << endl;
+    << "quit\n\n" << std::endl;
     waitEnter();
 }
 
 inline void waitEnter() {
-    cout << "Please enter to continue..." << endl;
-    while (cin.get()!='\n'); 
+    std::cout << "Please enter to continue..." << std::endl;
+    while (std::cin.get()!='\n'); 
 }

@@ -45,11 +45,31 @@ public:
     static std::string readInput();
 
     static void printInvalidInput();
-
+    
+    /**
+     * @brief return true or false based on probability
+     * 
+     * @param p the given probability as double from 0 -> 1
+     * @return true or false based on probability
+     */
     static bool probTrue(double p);
 
+    /**
+     * @brief Check whether the provided Size is valid
+     * 
+     * @param s The given string
+     * @return true if the size is in range and is integer
+     * @return false if the size is out of range or not integer
+     */
     static bool isValidSize(std::string s);
 
+    /**
+     * @brief Check whether the provided probability is valid
+     * 
+     * @param s The given string
+     * @return true if the probability is in range
+     * @return false if the size is out of range
+     */
     static bool isValidProbability(std::string s);
 };
 #endif
