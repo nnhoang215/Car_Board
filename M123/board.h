@@ -5,6 +5,8 @@
 #include "player.h"
 
 #define DEFAULT_BOARD_DIMENSION 10
+#define MAX_POS 9
+#define MIN_POS 0
 
 // strings for displaying the board.
 #define EMPTY_OUTPUT " "

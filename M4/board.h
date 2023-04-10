@@ -5,6 +5,7 @@
 #include "player.h"
 
 #define DEFAULT_BOARD_DIMENSION 10
+#define MIN_POS 0
 
 // strings for displaying the board.
 #define EMPTY_OUTPUT " "
@@ -106,6 +107,10 @@ public:
     * takes in the probability range 0.0 -> 1.0
     */
    void loadRandomObstacles(double probability);
+   
+   /*
+   * return size of board
+   */
    int getSize();
 };
 

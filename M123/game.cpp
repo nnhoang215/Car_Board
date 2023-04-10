@@ -11,7 +11,6 @@ Game::Game()
 
 Game::~Game()
 {
-    // delete player;
     delete board;
 }
 
@@ -33,14 +32,14 @@ bool Game::loadBoard()
     bool shouldRepeat = true;
     
     while (shouldRepeat) {
-        (this->board)->display(this->player);
+        (board)->display(player);
 
         std::cout << "At this stage of the program, only two commands are acceptable:\n"
             << "load <g>\n"
             << "quit\n\n" << std::endl;
 
         std::string input = Helper::readInput();
-        // verify input
+        // check for empty input
         if (input.length() < 1) {
             Helper::printInvalidInput();
             shouldRepeat = true;
@@ -53,10 +52,12 @@ bool Game::loadBoard()
                 Helper::splitString(input, *splitInput, " "); 
 
                 if ((*splitInput)[0] == "load") {
-                    //board number
+                    // *splitInput[1] is board number
                     if (Helper::isNumber((*splitInput)[1])) {
                         int numBoard = std::stoi((*splitInput)[1]);
-                        if (numBoard == 1 || numBoard == 2) {
+                        double numBoardDouble = std::stod((*splitInput)[1]);
+                        // validate exact board number
+                        if ((numBoard == 1 || numBoard == 2) && numBoard == numBoardDouble) {
                             board->load(numBoard);
                             shouldRepeat = false;
                             isSuccessful = true;
@@ -106,14 +107,15 @@ bool Game::initializePlayer()
                 std::vector<std::string>* detail = new std::vector<std::string>();
                 int x = -1;
                 int y = -1;
-
                 Helper::splitString((*splitInput)[1], *detail, ",");
+
                 if (Helper::isNumber((*detail)[0]) && Helper::isNumber((*detail)[1])) {
                     x = std::stoi((*detail)[0]);
                     y = std::stoi((*detail)[1]);
+                    bool isInt = (x == std::stod((*detail)[0])) && (y == std::stod((*detail)[1]));
 
-                    // check value in range
-                    if (x > 9 || y > 9) { // be careful
+                    // validate value in range & input is integer
+                    if ((x > MAX_POS || y > MAX_POS || x > MIN_POS || y > MIN_POS) && !isInt) {
                         Helper::printInvalidInput();
                         shouldRepeat = true;
                     } else {
@@ -153,10 +155,12 @@ bool Game::initializePlayer()
                 }
                 delete detail;
             } else if (command == "load") {
-                //board number
+                // *splitInput[1] is board number
                 if (Helper::isNumber((*splitInput)[1])) {
                     int numBoard = std::stoi((*splitInput)[1]);
-                    if (numBoard == 1 || numBoard == 2) {
+                    double numBoardDouble = std::stod((*splitInput)[1]);
+                    // validate exact board number
+                    if ((numBoard == 1 || numBoard == 2) && numBoard == numBoardDouble) {
                         board->load(numBoard);
                         shouldRepeat = true;
                     } else {

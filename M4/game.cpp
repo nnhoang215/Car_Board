@@ -37,7 +37,7 @@ bool Game::loadBoard()
             << "quit\n\n" << std::endl;
 
         std::string input = Helper::readInput();
-        // verify input
+        // check for empty input
         if (input.length() < 1) {
             Helper::printInvalidInput();
             shouldRepeat = true;
@@ -114,8 +114,8 @@ bool Game::initializePlayer()
                     x = std::stoi((*detail)[0]);
                     y = std::stoi((*detail)[1]);
 
-                    // check value in range
-                    if (x > board->getSize() || y > board->getSize() || x < 0 || y < 0) { // be careful
+                    // check coordinate value in range of board size
+                    if (x >= board->getSize() || y >= board->getSize() || x < MIN_POS || y < MIN_POS) {
                         Helper::printInvalidInput();
                         shouldRepeat = true;
                     } else {
@@ -154,7 +154,7 @@ bool Game::initializePlayer()
                     shouldRepeat = true;
                 }
                 delete detail;
-            } else if (command == "generate") { //TODO
+            } else if (command == "generate") {
                 std::vector<std::string>* detail = new std::vector<std::string>();
                 Helper::splitString((*splitInput)[1], *detail, ",");
 

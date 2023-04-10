@@ -52,19 +52,15 @@ Board::~Board()
 
 void Board::load(int boardId)
 {
-    // TODO
     if (boardId == 1) {
         *(this->board) = BOARD_1;
-    } else if (boardId == 2) {
-        *(this->board) = BOARD_2;
     } else {
-        std::cout << "need input validation" << std::endl;
+        *(this->board) = BOARD_2;
     }
 }
 
 void Board::loadRandomObstacles(double probability) {
-    //TODO
-    std::cout << "load random obstacles with probability: " << probability << std::endl;void loadRandomObstacles(double probability);
+
     for (int i = 0; i < this->boardSize; i++) {
         for (int j = 0; j < this->boardSize; j++) {
             if (Helper::probTrue(probability)) {
@@ -82,7 +78,7 @@ bool Board::placePlayer(Position position)
     
     // check if the position is available
     bool isBlocked = (*board)[position.getY()][position.getX()] == BLOCKED;
-    bool isOutBound = playerRowPosition >= boardSize || playerColPosition >= boardSize; // replace with board size
+    bool isOutBound = playerRowPosition >= boardSize || playerColPosition >= boardSize;
 
     if (!isBlocked && !isOutBound) {
         (*board)[position.getY()][position.getX()] = PLAYER;
@@ -98,8 +94,10 @@ PlayerMove Board::movePlayerForward(Player* player)
     PlayerMove playerMove = CELL_BLOCKED;
     int nextRowPos = nextPosition.getY();
     int nextColPos = nextPosition.getX();
-    
-    bool isOutBound = nextRowPos < 0 || nextColPos < 0 || nextRowPos >= boardSize || nextColPos >= boardSize; // replace with size of board
+    bool isRowOutBound = nextRowPos < MIN_POS || nextRowPos >= boardSize;
+    bool isColOutBound = nextColPos < MIN_POS ||  nextColPos >= boardSize;
+    bool isOutBound = isRowOutBound || isColOutBound;
+
     if (isOutBound) {
         playerMove = OUTSIDE_BOUNDS;
     } else {
@@ -122,7 +120,6 @@ PlayerMove Board::movePlayerForward(Player* player)
 
 void Board::display(Player* player)
 {
-    // this function prints the matrix 
     for(int i = -1; i < this->boardSize; i++) {
         std::cout << LINE_OUTPUT;
         if (i == -1) {
