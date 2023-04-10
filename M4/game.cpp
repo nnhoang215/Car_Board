@@ -11,7 +11,6 @@ Game::Game()
 
 Game::~Game()
 {
-    delete player;
     delete board;
 }
 
@@ -33,10 +32,8 @@ bool Game::loadBoard()
     bool shouldRepeat = true;
     
     while (shouldRepeat) {
-        (this->board)->display(this->player);
-
         std::cout << "At this stage of the program, only two commands are acceptable:\n"
-            << "load <g>\n"
+            << "generate <d>,<p>\n"
             << "quit\n\n" << std::endl;
 
         std::string input = Helper::readInput();
@@ -52,19 +49,24 @@ bool Game::loadBoard()
                 std::vector<std::string>* splitInput = new std::vector<std::string>();
                 Helper::splitString(input, *splitInput, " "); 
 
-                if ((*splitInput)[0] == "load") {
-                    //board number
-                    if (Helper::isNumber((*splitInput)[1])) {
-                        int numBoard = std::stoi((*splitInput)[1]);
-                        if (numBoard == 1 || numBoard == 2) {
-                            board->load(numBoard);
-                            shouldRepeat = false;
-                            isSuccessful = true;
-                        } else {
-                            Helper::printInvalidInput();
-                            shouldRepeat = true;
-                        }
+                if ((*splitInput)[0] == "generate") {
+                    std::vector<std::string>* detail = new std::vector<std::string>();
+                    Helper::splitString((*splitInput)[1], *detail, ",");
+
+                    if (Helper::isValidSize((*detail)[0]) && Helper::isValidProbability((*detail)[1])) {
+                        int boardSize = std::stoi((*detail)[0]);
+                        double probability = std::stod((*detail)[1]);
+
+                        delete this->board;
+                        this->board = new Board(boardSize);
+                        board->loadRandomObstacles(probability);
+                        shouldRepeat = false;
+                        isSuccessful = true;
+                    } else {
+                        Helper::printInvalidInput();
+                        shouldRepeat = true;
                     }
+                    delete detail;
                 } else {
                     Helper::printInvalidInput();
                     shouldRepeat = true;
@@ -74,7 +76,7 @@ bool Game::loadBoard()
         }
     }
 
-    return isSuccessful; // feel free to revise this line, depending on your implementation.
+    return isSuccessful;
 }
 
 bool Game::initializePlayer()
@@ -85,7 +87,7 @@ bool Game::initializePlayer()
     while (shouldRepeat) {
         board->display(player);
         std::cout << "At this stage of the program, only three commands are acceptable:\n"
-            << "load <g>\n"
+            << "generate <d>,<p>\n"
             << "init <x>,<y>,<direction>\n"
             << "quit\n\n" << std::endl;
 
@@ -113,7 +115,7 @@ bool Game::initializePlayer()
                     y = std::stoi((*detail)[1]);
 
                     // check value in range
-                    if (x > 9 || y > 9) { // be careful
+                    if (x > board->getSize() || y > board->getSize() || x < 0 || y < 0) { // be careful
                         Helper::printInvalidInput();
                         shouldRepeat = true;
                     } else {
@@ -152,18 +154,23 @@ bool Game::initializePlayer()
                     shouldRepeat = true;
                 }
                 delete detail;
-            } else if (command == "load") {
-                //board number
-                if (Helper::isNumber((*splitInput)[1])) {
-                    int numBoard = std::stoi((*splitInput)[1]);
-                    if (numBoard == 1 || numBoard == 2) {
-                        board->load(numBoard);
-                        shouldRepeat = true;
-                    } else {
-                        Helper::printInvalidInput();
-                        shouldRepeat = true;
-                    }
+            } else if (command == "generate") { //TODO
+                std::vector<std::string>* detail = new std::vector<std::string>();
+                Helper::splitString((*splitInput)[1], *detail, ",");
+
+                if (Helper::isValidSize((*detail)[0]) && Helper::isValidProbability((*detail)[1])) {
+                    int boardSize = std::stoi((*detail)[0]);
+                    double probability = std::stod((*detail)[1]);
+
+                    delete this->board;
+                    this->board = new Board(boardSize);
+                    board->loadRandomObstacles(probability);
+                    shouldRepeat = true;
+                } else {
+                    Helper::printInvalidInput();
+                    shouldRepeat = true;
                 }
+                delete detail;
             } else {
                 Helper::printInvalidInput();
                 shouldRepeat = true;
@@ -172,7 +179,7 @@ bool Game::initializePlayer()
         }
     }
 
-    return isSuccessful; // feel free to revise this line.
+    return isSuccessful;
 }
 
 void Game::play()
@@ -198,7 +205,6 @@ void Game::play()
                 shouldRepeat = false;
             } else {
                 if (input == "forward" || input == "f") {
-                    std::cout << "go forward\n" << std::endl;
                     PlayerMove playerMove = board->movePlayerForward(this->player);        
                     
                     if (playerMove == PLAYER_MOVED) {
