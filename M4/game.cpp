@@ -39,8 +39,12 @@ bool Game::loadBoard()
         std::string input = Helper::readInput();
         // check for empty input
         if (input.length() < 1) {
-            Helper::printInvalidInput();
-            shouldRepeat = true;
+            if (std::cin.eof()) {
+                shouldRepeat = false;
+            } else {
+                Helper::printInvalidInput();
+                shouldRepeat = true;
+            }
         } else {
             if (input == "quit") {
                 shouldRepeat = false;
@@ -94,8 +98,12 @@ bool Game::initializePlayer()
         std::string input = Helper::readInput();
          // check for empty string
         if (input.length() < 1) {
-            Helper::printInvalidInput();
-            shouldRepeat = true;
+            if (std::cin.eof()) {
+                shouldRepeat = false;
+            } else {
+                Helper::printInvalidInput();
+                shouldRepeat = true;
+            }
         } else {
             std::vector<std::string>* splitInput = new std::vector<std::string>();
             Helper::splitString(input, *splitInput, " "); 
@@ -197,8 +205,12 @@ void Game::play()
         std::string input = Helper::readInput();
 
         if (input.length() < 1) {
-            Helper::printInvalidInput();
-            shouldRepeat = true;
+            if (std::cin.eof()) {
+                shouldRepeat = false;
+            } else {
+                Helper::printInvalidInput();
+                shouldRepeat = true;
+            }
         } else {
             if (input == "quit") {
                 std::cout << "Total player moves: " << this->player->moves <<  "\n" << std::endl;
