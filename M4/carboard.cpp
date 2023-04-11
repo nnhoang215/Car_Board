@@ -19,7 +19,7 @@ int main()
     // determines if the program continue running
     bool shouldExitProgram = false;
 
-    while (!shouldExitProgram) {
+    while (!shouldExitProgram && !std::cin.eof()) {
         promptMenu(shouldExitProgram);
     }
 
