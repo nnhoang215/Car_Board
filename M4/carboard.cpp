@@ -1,3 +1,22 @@
+/*
+    I first attempted to create a functional version of the game to have a general view of the 
+    program, see if there are concepts or syntax that I'm not familiar with, my code looked monolithic.
+    But then, later in the project, I had to think about programming in object-oriented design, 
+    separating classes, functions into smaller modules according to the code template.
+    Many functions like the promptMenu(), loadBoard(), or initialisePlayer() run in while loop that 
+    only ends when the user has successfully entered the right, valid command or when they want to 
+    quit the program, and then I continued building the program according to the sample program. 
+    Instead of hard-coding board vectors, I have created for loops to create and 
+    display them from the beginning, making it easier to complete M4. I first envisioned the programs 
+    recursively, which I let the functions call themselves to create a loop. This led to multiple 
+    memory errors and difficulty debugging. After learning about the course convention, I did a 
+    full code review and changed functions to single input - single output. I like the template 
+    code, it helped me so much and it somewhat shows me the standard way to organize classes, 
+    properties, and methods. I would allow more modification of the classes so that I can further
+    breakdown the code I write. I know that much of my code is reusable, but I found myself having
+    to copy and paste instead of modularizing them.
+*/
+
 #include "game.h"
 #include "helper.h"
 #include "board.h"
